@@ -5,17 +5,20 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../Delegatable.sol";
 
 contract DelegatableWeth is ERC20, Delegatable {
-    constructor(
-        string memory name,
-        string memory symbol
-    ) Delegatable(name, "1") ERC20(name, symbol) {}
+    constructor(string memory name, string memory symbol)
+        Delegatable(name, "1")
+        ERC20(name, symbol)
+    {}
 
     function deposit() public payable {
         _mint(msg.sender, msg.value);
     }
 
-    function withdraw(uint wa) public {
-        require(balanceOf(msg.sender) >= wa, "DelegatableWeth:insufficient-funds");
+    function withdraw(uint256 wa) public {
+        require(
+            balanceOf(msg.sender) >= wa,
+            "DelegatableWeth:insufficient-funds"
+        );
         _burn(msg.sender, wa);
         (bool sent, ) = msg.sender.call{value: wa}("");
         require(sent, "DelegatableWeth:eth-send-failed");
